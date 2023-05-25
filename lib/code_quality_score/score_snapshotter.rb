@@ -4,9 +4,9 @@ require_relative "./lib"
 
 module CodeQualityScore
   class ScoreSnapshotter
-    def self.calculate_score_snapshot(is_gem)
+    def self.calculate_score_snapshot(is_gem, relative_path_to_repository: "./")
       solution = {
-        relative_path: "./",
+        relative_path: relative_path_to_repository,
         folder: is_gem ? "lib" : "app"
       }
 

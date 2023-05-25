@@ -5,8 +5,9 @@ require "code_quality_score/score_snapshotter"
 
 # inputs
 is_gem = ARGV[0] == "true"
-puts "Calculating score snapshot for #{is_gem ? "gem" : "app"}..."
+relative_path = ARGV[1] || "./"
+puts "Calculating score snapshot for #{is_gem ? "gem" : "app"} in folder #{relative_path}..."
 
 # calculate score snapshot
-score_snapshot = CodeQualityScore::ScoreSnapshotter.calculate_score_snapshot(is_gem)
+score_snapshot = CodeQualityScore::ScoreSnapshotter.calculate_score_snapshot(is_gem, relative_path_to_repository: relative_path)
 puts(score_snapshot)
