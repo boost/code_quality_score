@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    code_quality_score (0.1.4)
+    code_quality_score (0.1.5)
       flay (>= 2.13.0)
       flog (>= 4.6.5)
       reek (>= 6.1.1)
