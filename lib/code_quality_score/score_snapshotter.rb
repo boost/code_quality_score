@@ -1,12 +1,13 @@
-require './lib'
+# frozen_string_literal: true
+
+require_relative "./lib"
 
 module CodeQualityScore
   class ScoreSnapshotter
-
     def self.calculate_score_snapshot(is_gem)
       solution = {
-        relative_path: './',
-        folder: is_gem ? 'lib' : 'app'
+        relative_path: "./",
+        folder: is_gem ? "lib" : "app"
       }
 
       result = {
@@ -19,6 +20,5 @@ module CodeQualityScore
 
       result
     end
-
   end
 end
