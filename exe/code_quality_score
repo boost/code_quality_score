@@ -4,7 +4,7 @@
 require "code_quality_score/score_snapshotter"
 
 # inputs
-is_gem = ARGV[0] == "true"
+is_gem = ARGV[0] == "lib"
 relative_path = ARGV[1] || "./"
 puts "Calculating score snapshot for #{is_gem ? "gem" : "app"} in folder #{relative_path}..."
 
