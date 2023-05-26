@@ -3,7 +3,7 @@ name: 'Code Quality Score'
 description: 'Calculate the code quality score for the code based on reek, flay, and flog'
 inputs:
   code_folder:  # id of input
-    description: 'Code folder (either 'app' or 'lib')'
+    description: Code folder (either app or lib)
     required: true
     default: 'app'
 outputs:
