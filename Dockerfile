@@ -1,15 +1,19 @@
 # Container image that runs your code
 FROM ruby:3.0-alpine
 
-RUN mkdir /gem 
+RUN apk add git
 
-COPY . /gem
+RUN mkdir /gem && mkdir /app
 
-RUN cd /gem
+COPY ./action_stuff /gem
+
+WORKDIR "/gem"
 
 RUN bundle install
 
 RUN chmod +x entrypoint.sh
+
+WORKDIR "/app"
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/gem/entrypoint.sh"]
