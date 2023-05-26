@@ -3,7 +3,7 @@
 echo "Hello $1"
 
 echo `pwd`
-echo `ls`
+echo `file app`
 
 /gem/bin/code_quality_score $1 .
 
