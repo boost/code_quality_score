@@ -2,6 +2,9 @@
 
 echo "Hello $1"
 
+echo `pwd`
+echo `ls`
+
 /gem/bin/code_quality_score $1 .
 
 echo “::set-output name=total_score::18.9”
