@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM ruby:3.0-alpine
+FROM alpine:3.10
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY action_stuff/entrypoint.sh /entrypoint.sh
