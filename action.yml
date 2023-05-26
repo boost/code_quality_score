@@ -10,9 +10,9 @@ outputs:
   total_score: # id of output
     description: 'The total score'
   similarity_score_per_file: 
-    description: 'Average similarity score by code files (based on flay)',
+    description: 'Average similarity score by code files (based on flay)'
   abc_method_average: 
-    description: 'Average abc method score (based on flog)',
+    description: 'Average abc method score (based on flog)'
   code_smells_per_file: 
     description: 'Average number of code smells per file (based on reek)'
   
