@@ -10,6 +10,7 @@ COPY ./action_stuff /gem
 WORKDIR "/gem"
 
 RUN bundle install
+RUN bundle binstubs code_quality_score
 
 RUN chmod +x entrypoint.sh
 

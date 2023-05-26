@@ -2,7 +2,7 @@
 
 echo "Hello $1"
 
-/gem/exe/code_quality_score $1 .
+/gem/bin/code_quality_score $1 .
 
 echo “::set-output name=total_score::18.9”
 
