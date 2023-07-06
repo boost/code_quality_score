@@ -16,7 +16,7 @@ end
 
 def abc_method_average_score(solution)
   score_line = `flog #{solution[:relative_path]}#{folder(solution)}/* | head -n 2 | tail -1`
-  Float(score_line.split(":").first)
+  Float(score_line.split(":").first).round(2)
 end
 
 def code_smells_per_file(solution)
