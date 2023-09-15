@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative "../lib/code_quality_score/score_snapshotter"
+require_relative "../lib/code_quality_score/format_comparison"
+
+# inputs
+base_is_gem = ARGV[0] == "lib"
+base_relative_path = ARGV[1] || "./"
+
+pr_is_gem = ARGV[2] == "lib"
+pr_relative_path = ARGV[3] || "./"
+
+# calculate
+puts "Calculating score snapshot for #{base_is_gem ? "gem" : "app"} in folder #{base_relative_path}..."
+base_score_snapshot = CodeQualityScore::ScoreSnapshotter.calculate_score_snapshot(base_is_gem,
+                                                                                  relative_path_to_repository: base_relative_path)
+
+puts "Calculating score snapshot for #{pr_is_gem ? "gem" : "app"} in folder #{pr_relative_path}..."
+pr_score_snapshot = CodeQualityScore::ScoreSnapshotter.calculate_score_snapshot(pr_is_gem,
+                                                                                relative_path_to_repository: pr_relative_path)
+
+# format
+CodeQualityScore::FormatComparison.format_as_markdown(base_score_snapshot, pr_score_snapshot)
