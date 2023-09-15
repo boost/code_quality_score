@@ -6,7 +6,7 @@ module CodeQualityScore
   class FormatComparison
     def self.format_as_markdown(base_result, pr_result)
       difference_result = base_result.map do |key, value|
-        difference_value = pr_result[key] - value
+        difference_value = (pr_result[key] - value).round(2)
         [key, difference_value]
       end.to_h
 
