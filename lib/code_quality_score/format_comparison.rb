@@ -21,7 +21,7 @@ module CodeQualityScore
                       end
 
       result = <<~HEREDOC
-        ## Code quality audit
+        ## Code quality score
         The code quality has #{intro_summary} for this PR.
 
         |         | Similarity score | ABC complexity | Code smells | TOTALS |
