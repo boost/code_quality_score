@@ -42,7 +42,7 @@ jobs:
       - name: Calculate the quality scores
         run: |
           bundle binstubs code_quality_score --force
-          bin/code_quality_score_comparison app ./base/ app ./head/ > formatted_message.md
+          bin/code_quality_score_comparison ./base/ ./head/ > formatted_message.md
           cat formatted_message.md
 
       - name: Find any existing comment
