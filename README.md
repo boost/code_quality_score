@@ -13,9 +13,13 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 
 ## Usage
 
-`bin/code_quality_score` # assumes it is an app, not a gem, and you are running it from the directory of the repository.
+Code is assumed to be in the `app` and `lib` folders of a repository, if they exist.
 
-`bin/code_quality_score lib ../my-repo/` # first argument is the folder where the source code is expected to be. Defaults to "app". Second argument is the relative directory of the repository.  Defaults to "./" 
+`bin/code_quality_score` # calculates the score for the current directory
+
+`bin/code_quality_score ../my-repo/` # provide a path to another repository
+
+`bin/code_quality_score_comparison ../base-repo/ ../head-repo/` # compares two versions of a repo and shows the change. 
 
 ## Development
 

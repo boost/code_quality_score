@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "./lib"
-
 module CodeQualityScore
   class FormatComparison
     def self.format_as_markdown(base_result, pr_result)

@@ -17,7 +17,7 @@ jobs:
           path: head
 
       - name: Checkout base code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: base
           ref: ${{ github.event.pull_request.base.sha }}

@@ -1,14 +1,12 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "../lib/code_quality_score/score_snapshotter"
+require_relative "../lib/code_quality_score"
 
 # inputs
-is_gem = ARGV[0] == "lib"
-relative_path = ARGV[1] || "./"
-puts "Calculating score snapshot for #{is_gem ? "gem" : "app"} in folder #{relative_path}..."
+relative_path = ARGV[0] || "./"
+puts "Calculating score snapshot for #{relative_path}..."
 
 # calculate score snapshot
-score_snapshot = CodeQualityScore::ScoreSnapshotter.calculate_score_snapshot(is_gem,
-                                                                             relative_path_to_repository: relative_path)
+score_snapshot = CodeQualityScore::ScoreSnapshot.new(repository_path: relative_path).calculate_score
 puts(score_snapshot)
