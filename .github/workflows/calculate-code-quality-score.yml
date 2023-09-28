@@ -1,0 +1,68 @@
+name: Code quality score change
+
+on:
+  - workflow_call
+
+jobs:
+  code_quality_score:
+    runs-on: self-hosted
+    name: Code quality
+    env: 
+      BUNDLE_GEMFILE: ${{ github.workspace }}/CodeQuality.gemfile
+      BUNDLE_DEPLOYMENT: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: head
+
+      - name: Checkout base code
+        uses: actions/checkout@v2
+        with:
+          path: base
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Create gemfile
+        run: |
+          echo "source 'https://rubygems.org'" > ${{ github.workspace }}/CodeQuality.gemfile
+          echo "git_source(:github) { |repo| \"https://github.com/#{repo}.git\" }" >> ${{ github.workspace }}/CodeQuality.gemfile
+          echo "gem 'code_quality_score', git: 'https://github.com/boost/code_quality_score'" >> ${{ github.workspace }}/CodeQuality.gemfile
+          echo "gem 'rexml'" >> ${{ github.workspace }}/CodeQuality.gemfile
+          rm --force ${{ github.workspace }}/CodeQuality.gemfile.lock
+          rm --force ${{ github.workspace }}/.bundle/config
+          cp head/.ruby-version .ruby-version
+
+      - name: Set up Ruby & bundle
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+          cache-version: 3
+
+      - name: Calculate the quality scores
+        run: |
+          bundle binstubs code_quality_score --force
+          bin/code_quality_score_comparison app ./base/ app ./head/ > formatted_message.md
+          cat formatted_message.md
+
+      - name: Find any existing comment
+        uses: peter-evans/find-comment@v2
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: '## Code quality score'
+
+      - name: Add/update comment to PR
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{github.event.pull_request.number}}
+          body-path: 'formatted_message.md'
+          edit-mode: replace
+
+      - name: Fail job if score degraded
+        run: |
+          if grep -q worse formatted_message.md; then
+            exit 1
+          fi
+
