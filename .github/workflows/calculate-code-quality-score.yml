@@ -1,4 +1,4 @@
-name: Code quality score change
+name: Code quality
 
 on:
   - workflow_call
@@ -6,7 +6,7 @@ on:
 jobs:
   code_quality_score:
     runs-on: self-hosted
-    name: Code quality
+    name: Calculate score change
     env: 
       BUNDLE_GEMFILE: ${{ github.workspace }}/CodeQuality.gemfile
       BUNDLE_DEPLOYMENT: false
