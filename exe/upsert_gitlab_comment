@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+require_relative "../lib/gitlab_helper"
+
+# inputs
+message = ARGV[0]
+
+config = {
+  gitlab_url: ARGV[1],
+  project_id: ARGV[2],
+  merge_request_id: ARGV[3],
+  access_token: ARGV[4]
+}
+
+helper = GitlabHelper.new(config)
+helper.upsert_gitlab_comment(message)

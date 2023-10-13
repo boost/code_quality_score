@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
+  spec.add_dependency "faraday"
   spec.add_dependency "flay", ">= 2.13.0"
   spec.add_dependency "flog", ">= 4.6.5"
   spec.add_dependency "reek", ">= 6.1.1"
