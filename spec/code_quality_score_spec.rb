@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
-require "code_quality_score/score_snapshotter"
+require "code_quality_score/score_snapshot"
 
-RSpec.describe CodeQualityScore do
+RSpec.describe CodeQualityScore::ScoreSnapshot do
+  subject(:score_snapshot) { CodeQualityScore::ScoreSnapshot.new(repository_path: "./") }
+
   it "has a version number" do
     expect(CodeQualityScore::VERSION).not_to be nil
   end
 
-  it "calculates scores" do
-    expect(CodeQualityScore::ScoreSnapshotter.calculate_score_snapshot(true)).to eq({
-                                                                                      abc_method_average: 6.8,
-                                                                                      code_smells_per_file: 0.5,
-                                                                                      similarity_score_per_file: 14.5,
-                                                                                      total_score: 21.8
-                                                                                    })
+  it "calculates scores for it's own code without error" do
+    expect(score_snapshot.calculate_score).to eq({
+                                                   abc_method_average: 5.9,
+                                                   code_smells_per_file: 0.25,
+                                                   similarity_score_per_file: 0.0,
+                                                   total_score: 6.15
+                                                 })
   end
 end

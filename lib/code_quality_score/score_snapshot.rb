@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'pry-byebug'
 
 module CodeQualityScore
   class ScoreSnapshot
@@ -11,7 +12,7 @@ module CodeQualityScore
       file_count = count_files(folders)
 
       result = {
-        similarity_score_per_file: structural_similarity_score_per_file(folders, file_count),
+        similarity_score_per_file: structural_similarity_score_per_file(folders),
         abc_method_average: abc_method_average_score(folders),
         code_smells_per_file: code_smells_per_file(folders, file_count)
       }
@@ -33,10 +34,11 @@ module CodeQualityScore
       Integer(`find #{folders} -type f | wc -l`)
     end
 
-    def structural_similarity_score_per_file(folders, file_count)
+    def structural_similarity_score_per_file(folders)
       score_line = `flay #{folders}/* | head -n 1`
       score_number = Float(score_line.split(" ").last)
-      (score_number / file_count).round(2)
+      leveler_number = 1000 # to make sure it doesn't swamp other scores
+      (score_number / leveler_number).round(2)
     end
 
     def abc_method_average_score(folders)
