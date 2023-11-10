@@ -17,6 +17,7 @@ RSpec.describe CodeQualityScore::ScoreSnapshot do
       code_smells_per_file: 0.5,
       similarity_score: 44.0,
       total_file_count: 2,
+      ruby_file_count: 2,
       total_score: 53.0
     }
   end

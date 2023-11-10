@@ -3,7 +3,11 @@ require 'pry-byebug'
 
 module CodeQualityScore
   class ScoreSnapshot
-    DEFAULT_SCORE_WEIGHTS = { similarity_score: 1, abc_method_average: 1, code_smells_per_file: 1 }.freeze
+    DEFAULT_SCORE_WEIGHTS = {
+      similarity_score: 0.003,
+      abc_method_average: 0.8,
+      code_smells_per_file: 5
+    }.freeze
 
     def initialize(repository_path:, score_weights: {})
       @repo_path = repository_path
@@ -12,16 +16,17 @@ module CodeQualityScore
 
     def calculate_score
       folders = find_folders.join(' ')
-      file_count = count_files(folders)
+      ruby_file_count = count_ruby_files(folders)
 
       result = {
         similarity_score: structural_similarity_score(folders),
         abc_method_average: abc_method_average_score(folders),
-        code_smells_per_file: code_smells_per_file(folders, file_count)
+        code_smells_per_file: code_smells_per_file(folders, ruby_file_count)
       }
 
       result[:total_score] = result.values.sum.round(2)
-      result[:total_file_count] = file_count
+      result[:total_file_count] = count_files(folders)
+      result[:ruby_file_count] = ruby_file_count
 
       result
     end
@@ -36,6 +41,10 @@ module CodeQualityScore
 
     def count_files(folders)
       Integer(`find #{folders} -type f | wc -l`)
+    end
+
+    def count_ruby_files(folders)
+      Integer(`find #{folders} -type f -name "*.rb" | wc -l`)
     end
 
     def structural_similarity_score(folders)
