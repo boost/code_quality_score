@@ -3,8 +3,9 @@ require 'pry-byebug'
 
 module CodeQualityScore
   class ScoreSnapshot
-    def initialize(repository_path:)
+    def initialize(repository_path:, similarity_score_leveler: 1000)
       @repo_path = repository_path
+      @similarity_score_leveler = similarity_score_leveler
     end
 
     def calculate_score
@@ -12,12 +13,13 @@ module CodeQualityScore
       file_count = count_files(folders)
 
       result = {
-        similarity_score_per_file: structural_similarity_score_per_file(folders),
+        similarity_score: structural_similarity_score_per_file(folders),
         abc_method_average: abc_method_average_score(folders),
-        code_smells_per_file: code_smells_per_file(folders, file_count)
+        code_smells_per_file: code_smells_per_file(folders, file_count),
       }
 
       result[:total_score] = result.values.sum.round(2)
+      result[:total_file_count] = file_count
 
       result
     end
@@ -37,8 +39,7 @@ module CodeQualityScore
     def structural_similarity_score_per_file(folders)
       score_line = `flay #{folders}/* | head -n 1`
       score_number = Float(score_line.split(" ").last)
-      leveler_number = 1000 # to make sure it doesn't swamp other scores
-      (score_number / leveler_number).round(2)
+      (score_number / @similarity_score_leveler).round(2)
     end
 
     def abc_method_average_score(folders)
