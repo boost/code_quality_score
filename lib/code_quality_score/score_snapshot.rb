@@ -4,7 +4,7 @@ require 'pry-byebug'
 module CodeQualityScore
   class ScoreSnapshot
     DEFAULT_SCORE_WEIGHTS = {
-      similarity_score: 0.003,
+      similarity_score: 0.01,
       abc_method_average: 0.8,
       code_smells_per_file: 5
     }.freeze
