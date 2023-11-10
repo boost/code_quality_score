@@ -3,7 +3,14 @@
 require "code_quality_score/score_snapshot"
 
 RSpec.describe CodeQualityScore::ScoreSnapshot do
-  subject(:score_snapshot) { CodeQualityScore::ScoreSnapshot.new(repository_path: "./spec/test_project") }
+  subject(:score_snapshot) { CodeQualityScore::ScoreSnapshot.new(repository_path: "./spec/test_project", score_weights: score_weights) }
+  let(:score_weights) do
+    {
+      similarity_score: 1,
+      abc_method_average: 1,
+      code_smells_per_file: 1
+    }
+  end
   let(:expected_scores) do
     {
       abc_method_average: 8.5,
