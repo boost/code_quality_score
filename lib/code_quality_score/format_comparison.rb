@@ -22,8 +22,8 @@ module CodeQualityScore
         ## Code quality score
         The code quality has #{intro_summary} for this PR.
 
-        |         | Similarity score | ABC complexity | Code smells | TOTALS |
-        |---------|------------------|----------------|-------------|--------|
+        |         | Ruby file count | Similarity score | ABC complexity | Code smells | TOTALS |
+        |---------|-----------------|------------------|----------------|-------------|--------|
         #{format_row("base", base_result)}
         #{format_row("this branch", pr_result)}
         #{format_row("difference", difference_result)}
@@ -34,12 +34,13 @@ module CodeQualityScore
     end
 
     def self.format_row(name, hash)
-      sim_score = hash[:similarity_score_per_file]
+      ruby_files = hash[:ruby_file_count]
+      sim_score = hash[:similarity_score]
       abc_score = hash[:abc_method_average]
       smells_score = hash[:code_smells_per_file]
       total = hash[:total_score]
 
-      "| #{name} | #{sim_score} | #{abc_score} | #{smells_score} | #{total} |"
+      "| #{name} | #{ruby_files} | #{sim_score} | #{abc_score} | #{smells_score} | #{total} |"
     end
   end
 end
