@@ -1,22 +1,32 @@
 # frozen_string_literal: true
+require 'pry-byebug'
 
 module CodeQualityScore
   class ScoreSnapshot
-    def initialize(repository_path:)
+    DEFAULT_SCORE_WEIGHTS = {
+      similarity_score: 0.003,
+      abc_method_average: 0.8,
+      code_smells_per_file: 5
+    }.freeze
+
+    def initialize(repository_path:, score_weights: {})
       @repo_path = repository_path
+      @score_weights = DEFAULT_SCORE_WEIGHTS.merge(score_weights)
     end
 
     def calculate_score
       folders = find_folders.join(' ')
-      file_count = count_files(folders)
+      ruby_file_count = count_ruby_files(folders)
 
       result = {
-        similarity_score_per_file: structural_similarity_score_per_file(folders, file_count),
+        similarity_score: structural_similarity_score(folders),
         abc_method_average: abc_method_average_score(folders),
-        code_smells_per_file: code_smells_per_file(folders, file_count)
+        code_smells_per_file: code_smells_per_file(folders, ruby_file_count)
       }
 
       result[:total_score] = result.values.sum.round(2)
+      result[:total_file_count] = count_files(folders)
+      result[:ruby_file_count] = ruby_file_count
 
       result
     end
@@ -33,21 +43,30 @@ module CodeQualityScore
       Integer(`find #{folders} -type f | wc -l`)
     end
 
-    def structural_similarity_score_per_file(folders, file_count)
+    def count_ruby_files(folders)
+      Integer(`find #{folders} -type f -name "*.rb" | wc -l`)
+    end
+
+    def structural_similarity_score(folders)
       score_line = `flay #{folders}/* | head -n 1`
-      score_number = Float(score_line.split(" ").last)
-      (score_number / file_count).round(2)
+      score_number = Float(score_line.split(" ").last).round(2)
+      weighted_score = score_number * @score_weights[:similarity_score]
+      weighted_score.round(2)
     end
 
     def abc_method_average_score(folders)
       score_line = `flog #{folders}/* | head -n 2 | tail -1`
-      Float(score_line.split(":").first)
+      score = Float(score_line.split(":").first).round(2)
+      weighted_score = score * @score_weights[:abc_method_average]
+      weighted_score.round(2)
     end
 
     def code_smells_per_file(folders, file_count)
       score_line = `reek #{folders}/* | tail -1`
       score_number = Float(score_line.split(" ").first)
-      (score_number / file_count).round(2)
+      score_per_file = (score_number / file_count).round(2)
+      weighted_score = score_per_file * @score_weights[:code_smells_per_file]
+      weighted_score.round(2)
     end
   end
 end
