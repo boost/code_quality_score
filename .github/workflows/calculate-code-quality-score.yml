@@ -31,6 +31,7 @@ jobs:
           rm --force ${{ github.workspace }}/CodeQuality.gemfile.lock
           rm --force ${{ github.workspace }}/.bundle/config
           cp head/.ruby-version .ruby-version
+          cp head/.reek.yml head/.flay.yml head/.flog.yml .
 
       - name: Set up Ruby & bundle
         uses: ruby/setup-ruby@v1
