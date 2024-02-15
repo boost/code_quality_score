@@ -24,7 +24,6 @@ end
 require 'faraday'
 
 connection = Faraday.new(
-  url: params[:'api-host'],
   headers: {
     'PRIVATE-TOKEN' => params[:'gitlab-token'],
     'Content-Type' => 'application/json'
@@ -33,17 +32,20 @@ connection = Faraday.new(
   faraday.response :json
   faraday.request :json
   faraday.response :raise_error
+  builder.response :logger
 end
 
 def log_errors(request_description)
   yield
 rescue Faraday::Error => e
   puts "Error when #{request_description}:"
-  puts "  Status: #{e.response[:status]}"
-  puts "  Body: #{e.response[:body]}"
+  unless e.response.nil?
+    puts "  Status: #{e.response[:status]}"
+    puts "  Body: #{e.response[:body]}"
+  end
 end
 
-base_mr_path = "/projects/#{params[:'project-id']}/merge_requests/#{params[:'mr-id']}"
+base_mr_path = "#{params[:'api-host']}/projects/#{params[:'project-id']}/merge_requests/#{params[:'mr-id']}"
 
 # Get existing notes for this MR
 existing_notes = log_errors("getting existing notes") do
