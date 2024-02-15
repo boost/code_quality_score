@@ -15,8 +15,6 @@ end.parse!(into: params)
 REQUIRED_ARGS = %i[api-base-url project-id mr-id gitlab-token message]
 missing_arguments = REQUIRED_ARGS - params.keys
 
-pp params
-
 if missing_arguments.any?
   raise ArgumentError, "Missing required arguments: #{missing_arguments.join(', ')}"
 end
@@ -56,8 +54,6 @@ existing_notes = log_errors("getting existing notes") do
   response = connection.get("#{base_mr_path}/notes")
   response.body
 end
-
-pp existing_notes
 
 previous_quality_note = existing_notes.find do |note|
   note['body'].start_with?('## Code quality score')
