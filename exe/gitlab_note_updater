@@ -32,7 +32,7 @@ connection = Faraday.new(
   faraday.response :json
   faraday.request :json
   faraday.response :raise_error
-  builder.response :logger
+  faraday.response :logger
 end
 
 def log_errors(request_description)
