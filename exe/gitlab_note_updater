@@ -5,15 +5,17 @@ require 'optparse'
 
 params = {}
 OptionParser.new do |opts|
-  opts.on('-h API_URL', '--api-base-url=API_URL')
+  opts.on('-u API_URL', '--api-base-url=API_URL')
   opts.on('-p PROJECT_ID', '--project-id=PROJECT_ID')
   opts.on('-i MR_ID', '--mr-id=MR_ID')
   opts.on('-t GITLAB_TOKEN', '--gitlab-token=GITLAB_TOKEN')
   opts.on('-m MESSAGE', '--message=MESSAGE')
 end.parse!(into: params)
 
-REQUIRED_ARGS = %i[api_base_url project_id mr_id gitlab_token message]
+REQUIRED_ARGS = %i[api-base-url project-id mr-id gitlab-token message]
 missing_arguments = REQUIRED_ARGS - params.keys
+
+pp params
 
 if missing_arguments.any?
   raise ArgumentError, "Missing required arguments: #{missing_arguments.join(', ')}"
@@ -22,9 +24,9 @@ end
 require 'faraday'
 
 connection = Faraday.new(
-  url: params[:api_host],
+  url: params[:'api-host'],
   headers: {
-    'PRIVATE-TOKEN' => params[:gitlab_token],
+    'PRIVATE-TOKEN' => params[:'gitlab-token'],
     'Content-Type' => 'application/json'
   }
 ) do |faraday|
@@ -41,7 +43,7 @@ rescue Faraday::Error => e
   puts "  Body: #{e.response[:body]}"
 end
 
-base_mr_path = "/projects/#{params[:project_id]}/merge_requests/#{params[:mr_id]}"
+base_mr_path = "/projects/#{params[:'project-id']}/merge_requests/#{params[:'mr-id']}"
 
 # Get existing notes for this MR
 existing_notes = log_errors("getting existing notes") do
