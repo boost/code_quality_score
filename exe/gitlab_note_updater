@@ -63,7 +63,7 @@ previous_quality_note = existing_notes.find do |note|
   note['body'].start_with?('## Code quality score')
 end
 
-if !previous_quality_not.nil? && previous_quality_note.any?
+if !previous_quality_note.nil? && previous_quality_note.any?
   puts "Found previous quality note, updating..."
   log_errors("updating note") do
     connection.put("#{base_mr_path}/notes/#{previous_quality_note['id']}", { body: params[:message] })
