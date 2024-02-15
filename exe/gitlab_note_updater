@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+
+params = {}
+OptionParser.new do |opts|
+  opts.on('-h API_URL', '--api-base-url=API_URL')
+  opts.on('-p PROJECT_ID', '--project-id=PROJECT_ID')
+  opts.on('-i MR_ID', '--mr-id=MR_ID')
+  opts.on('-t GITLAB_TOKEN', '--gitlab-token=GITLAB_TOKEN')
+  opts.on('-m MESSAGE', '--message=MESSAGE')
+end.parse!(into: params)
+
+REQUIRED_ARGS = %i[api_base_url project_id mr_id gitlab_token message]
+missing_arguments = REQUIRED_ARGS - params.keys
+
+if missing_arguments.any?
+  raise ArgumentError, "Missing required arguments: #{missing_arguments.join(', ')}"
+end
+
+require 'faraday'
+
+connection = Faraday.new(
+  url: params[:api_host],
+  headers: {
+    'PRIVATE-TOKEN' => params[:gitlab_token],
+    'Content-Type' => 'application/json'
+  }
+) do |faraday|
+  faraday.response :json
+  faraday.request :json
+  faraday.response :raise_error
+end
+
+def log_errors(request_description)
+  yield
+rescue Faraday::Error => e
+  puts "Error when #{request_description}:"
+  puts "  Status: #{e.response[:status]}"
+  puts "  Body: #{e.response[:body]}"
+end
+
+base_mr_path = "/projects/#{params[:project_id]}/merge_requests/#{params[:mr_id]}"
+
+# Get existing notes for this MR
+existing_notes = log_errors("getting existing notes") do
+  response = connection.get("#{base_mr_path}/notes")
+  response.body
+end
+
+pp existing_notes
+
+previous_quality_note = existing_notes.find do |note|
+  note['body'].start_with?('## Code quality score')
+end
+
+if previous_quality_note.any?
+  puts "Found previous quality note, updating..."
+  log_errors("updating note") do
+    connection.put("#{base_mr_path}/notes/#{previous_quality_note['id']}", { body: params[:message] })
+  end
+else
+  puts 'No previous quality note found, creating a new one...'
+  log_errors("creating note") do
+    connection.post("#{base_mr_path}/notes", { body: params[:message] })
+  end
+end
