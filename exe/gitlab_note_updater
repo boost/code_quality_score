@@ -22,8 +22,12 @@ if missing_arguments.any?
 end
 
 require 'faraday'
+require 'uri'
+
+uri = URI(params[:'api-base-url'])
 
 connection = Faraday.new(
+  url: uri,
   headers: {
     'PRIVATE-TOKEN' => params[:'gitlab-token'],
     'Content-Type' => 'application/json'
@@ -45,7 +49,7 @@ rescue Faraday::Error => e
   end
 end
 
-base_mr_path = "#{params[:'api-host']}/projects/#{params[:'project-id']}/merge_requests/#{params[:'mr-id']}"
+base_mr_path = "#{uri.path}/projects/#{params[:'project-id']}/merge_requests/#{params[:'mr-id']}"
 
 # Get existing notes for this MR
 existing_notes = log_errors("getting existing notes") do
