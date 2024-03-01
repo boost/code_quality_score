@@ -78,12 +78,18 @@ jobs:
             HEAD_FOLDERS+='lib/* '
           fi
 
+          echo $BASE_FOLDERS
+          echo $HEAD_FOLDERS
+
           cd base
+          echo 'flay base'
           flay $BASE_FOLDERS -# > ../flay_output_base.txt
           cd ../head
+          echo 'flay head'
           flay $HEAD_FOLDERS -# > ../flay_output_head.txt
           cd ..
 
+          echo 'flay diff'
           diff -u0 flay_output_base.txt flay_output_head.txt > flay_diff.txt
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Flay</summary>" >> $GITHUB_STEP_SUMMARY
@@ -93,8 +99,10 @@ jobs:
           echo "</details>" >> $GITHUB_STEP_SUMMARY
 
           cd base
+          echo 'flog base'
           flog $BASE_FOLDERS -ga > ../flog_output_base.txt
           cd ../head
+          echo 'flog head'
           flog $HEAD_FOLDERS -ga > ../flog_output_head.txt
           cd ..
 
