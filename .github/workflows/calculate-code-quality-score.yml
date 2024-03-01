@@ -61,55 +61,55 @@ jobs:
           body-path: 'formatted_message.md'
           edit-mode: replace
 
-      - name: Generate diffs
-        run: |
+      # - name: Generate diffs
+      #   run: |
 
-          cd base
-          echo 'flay base'
-          flay app lib -# > ../flay_output_base.txt
-          cd ../head
-          echo 'flay head'
-          flay app lib -# > ../flay_output_head.txt
-          cd ..
+      #     cd base
+      #     echo 'flay base'
+      #     flay app lib -# > ../flay_output_base.txt
+      #     cd ../head
+      #     echo 'flay head'
+      #     flay app lib -# > ../flay_output_head.txt
+      #     cd ..
 
-          echo 'flay diff'
-          diff flay_output_base.txt flay_output_head.txt > flay_diff.txt
-          echo "<details>" >> $GITHUB_STEP_SUMMARY
-          echo "<summary>Flay</summary>" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
-          cat flay_diff.txt >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "</details>" >> $GITHUB_STEP_SUMMARY
+      #     echo 'flay diff'
+      #     diff flay_output_base.txt flay_output_head.txt > flay_diff.txt
+      #     echo "<details>" >> $GITHUB_STEP_SUMMARY
+      #     echo "<summary>Flay</summary>" >> $GITHUB_STEP_SUMMARY
+      #     echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+      #     cat flay_diff.txt >> $GITHUB_STEP_SUMMARY
+      #     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      #     echo "</details>" >> $GITHUB_STEP_SUMMARY
 
-          cd base
-          echo 'flog base'
-          flog app lib -ga > ../flog_output_base.txt
-          cd ../head
-          echo 'flog head'
-          flog app lib -ga > ../flog_output_head.txt
-          cd ..
+      #     cd base
+      #     echo 'flog base'
+      #     flog app lib -ga > ../flog_output_base.txt
+      #     cd ../head
+      #     echo 'flog head'
+      #     flog app lib -ga > ../flog_output_head.txt
+      #     cd ..
 
-          diff flog_output_base.txt flog_output_head.txt > flog_diff.txt
-          echo "<details>" >> $GITHUB_STEP_SUMMARY
-          echo "<summary>Flog</summary>" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
-          cat flog_diff.txt >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "</details>" >> $GITHUB_STEP_SUMMARY
+      #     diff flog_output_base.txt flog_output_head.txt > flog_diff.txt
+      #     echo "<details>" >> $GITHUB_STEP_SUMMARY
+      #     echo "<summary>Flog</summary>" >> $GITHUB_STEP_SUMMARY
+      #     echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+      #     cat flog_diff.txt >> $GITHUB_STEP_SUMMARY
+      #     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      #     echo "</details>" >> $GITHUB_STEP_SUMMARY
           
-          cd base
-          reek app lib --no-line-numbers --no-progress > ../reek_output_base.txt
-          cd ../head
-          reek app lib --no-line-numbers --no-progress > ../reek_output_head.txt
-          cd ..
+      #     cd base
+      #     reek app lib --no-line-numbers --no-progress > ../reek_output_base.txt
+      #     cd ../head
+      #     reek app lib --no-line-numbers --no-progress > ../reek_output_head.txt
+      #     cd ..
 
-          diff reek_output_base.txt reek_output_head.txt > reek_diff.txt
-          echo "<details>" >> $GITHUB_STEP_SUMMARY
-          echo "<summary>Reek</summary>" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
-          cat reek_diff.txt >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "</details>" >> $GITHUB_STEP_SUMMARY
+      #     diff reek_output_base.txt reek_output_head.txt > reek_diff.txt
+      #     echo "<details>" >> $GITHUB_STEP_SUMMARY
+      #     echo "<summary>Reek</summary>" >> $GITHUB_STEP_SUMMARY
+      #     echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+      #     cat reek_diff.txt >> $GITHUB_STEP_SUMMARY
+      #     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      #     echo "</details>" >> $GITHUB_STEP_SUMMARY
 
       - name: Fail job if score degraded
         run: |
