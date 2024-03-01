@@ -56,8 +56,8 @@ existing_notes = log_errors("getting existing notes") do
 end
 
 # Adding some temporary logging to help work out why we're getting duplicates sometimes
-log_errors("#{existing_notes.count} notes found")
-log_errors(existing_notes.map { |note| note['body'] })
+puts "#{existing_notes.count} notes found"
+puts(existing_notes.map { |note| note['body'] })
 
 previous_quality_note = existing_notes.find do |note|
   note['body'].start_with?('## Code quality score')
