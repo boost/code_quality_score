@@ -73,7 +73,7 @@ jobs:
           cd ..
 
           echo 'flay diff'
-          diff -u0 flay_output_base.txt flay_output_head.txt > flay_diff.txt
+          diff -U 0 flay_output_base.txt flay_output_head.txt > flay_diff.txt
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Flay</summary>" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
@@ -89,7 +89,7 @@ jobs:
           flog app lib -ga > ../flog_output_head.txt
           cd ..
 
-          diff -u0 flog_output_base.txt flog_output_head.txt > flog_diff.txt
+          diff -U 0 flog_output_base.txt flog_output_head.txt > flog_diff.txt
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Flog</summary>" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
@@ -103,7 +103,7 @@ jobs:
           reek app lib --no-line-numbers --no-progress > ../reek_output_head.txt
           cd ..
 
-          diff -u0 reek_output_base.txt reek_output_head.txt > reek_diff.txt
+          diff -U 0 reek_output_base.txt reek_output_head.txt > reek_diff.txt
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Reek</summary>" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
