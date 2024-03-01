@@ -63,8 +63,8 @@ jobs:
 
       - name: Generate diffs
         run: |
-          $BASE_FOLDERS = ""
-          $HEAD_FOLDERS = ""
+          BASE_FOLDERS=
+          HEAD_FOLDERS= 
           if [ -d "./base/app" ]; then
             $BASE_FOLDERS .= 'base/app/* '
           fi
