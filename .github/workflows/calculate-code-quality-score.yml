@@ -66,16 +66,16 @@ jobs:
           BASE_FOLDERS=
           HEAD_FOLDERS= 
           if [ -d "./base/app" ]; then
-            $BASE_FOLDERS .= 'base/app/* '
+            $BASE_FOLDERS.="base/app/* "
           fi
           if [ -d "./base/lib" ]; then
-            $BASE_FOLDERS .= 'base/lib/* '
+            $BASE_FOLDERS.="base/lib/* "
           fi
           if [ -d "./head/app" ]; then
-            $HEAD_FOLDERS .= 'head/app/* '
+            $HEAD_FOLDERS.="head/app/* "
           fi
           if [ -d "./head/lib" ]; then
-            $HEAD_FOLDERS .= 'head/lib/* '
+            $HEAD_FOLDERS.="head/lib/* "
           fi
           flay $BASE_FOLDERS -# > flay_output_base.txt
           flay $HEAD_FOLDERS -# > flay_output_head.txt
