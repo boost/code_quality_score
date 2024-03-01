@@ -66,44 +66,54 @@ jobs:
           BASE_FOLDERS=
           HEAD_FOLDERS= 
           if [ -d "./base/app" ]; then
-            BASE_FOLDERS+='base/app/* '
+            BASE_FOLDERS+='app/* '
           fi
           if [ -d "./base/lib" ]; then
-            BASE_FOLDERS+='base/lib/* '
+            BASE_FOLDERS+='lib/* '
           fi
           if [ -d "./head/app" ]; then
-            HEAD_FOLDERS+='head/app/* '
+            HEAD_FOLDERS+='app/* '
           fi
           if [ -d "./head/lib" ]; then
-            HEAD_FOLDERS+='head/lib/* '
+            HEAD_FOLDERS+='lib/* '
           fi
-          flay $BASE_FOLDERS -# > flay_output_base.txt
-          flay $HEAD_FOLDERS -# > flay_output_head.txt
 
-          flog $BASE_FOLDERS -ga > flog_output_base.txt
-          flog $HEAD_FOLDERS -ga > flog_output_head.txt
-
-          reek $BASE_FOLDERS --no-line-numbers --no-progress > reek_output_base.txt
-          reek $HEAD_FOLDERS --no-line-numbers --no-progress > reek_output_head.txt
+          cd base
+          flay $BASE_FOLDERS -# > ../flay_output_base.txt
+          cd ../head
+          flay $HEAD_FOLDERS -# > ../flay_output_head.txt
+          cd ..
 
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Flay</summary>" >> $GITHUB_STEP_SUMMARY
           echo "```diff" >> $GITHUB_STEP_SUMMARY
-          diff -u0 flay_output_base.text flay_output_head.text > $GITHUB_STEP_SUMMARY
+          diff -u0 flay_output_base.txt flay_output_head.txt > $GITHUB_STEP_SUMMARY
           echo "```" >> $GITHUB_STEP_SUMMARY
           echo "</details>" >> $GITHUB_STEP_SUMMARY
+
+          cd base
+          flog $BASE_FOLDERS -ga > flog_output_base.txt
+          cd ../head
+          flog $HEAD_FOLDERS -ga > flog_output_head.txt
+          cd ..
 
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Flog</summary>" >> $GITHUB_STEP_SUMMARY
           echo "```diff" >> $GITHUB_STEP_SUMMARY
-          diff -u0 flog_output_base.text flay_output_head.text > $GITHUB_STEP_SUMMARY
+          diff -u0 flog_output_base.txt flog_output_head.txt > $GITHUB_STEP_SUMMARY
           echo "```" >> $GITHUB_STEP_SUMMARY
           echo "</details>" >> $GITHUB_STEP_SUMMARY
+          
+          cd base
+          reek $BASE_FOLDERS --no-line-numbers --no-progress > reek_output_base.txt
+          cd ../head
+          reek $HEAD_FOLDERS --no-line-numbers --no-progress > reek_output_head.txt
+          cd ..
 
           echo "<details>" >> $GITHUB_STEP_SUMMARY
           echo "<summary>Reek</summary>" >> $GITHUB_STEP_SUMMARY
           echo "```diff" >> $GITHUB_STEP_SUMMARY
-          diff -u0 reek_output_base.text reek_output_head.text > $GITHUB_STEP_SUMMARY
+          diff -u0 reek_output_base.txt reek_output_head.txt > $GITHUB_STEP_SUMMARY
           echo "```" >> $GITHUB_STEP_SUMMARY
           echo "</details>" >> $GITHUB_STEP_SUMMARY
 
