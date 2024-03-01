@@ -44,7 +44,7 @@ jobs:
         run: |
           bundle binstubs code_quality_score --force
           bin/code_quality_score_comparison ./base/ ./head/ > formatted_message.md
-          cat formatted_message.md
+          cat formatted_message.md > $GITHUB_STEP_SUMMARY
 
       - name: Find any existing comment
         uses: peter-evans/find-comment@v2
@@ -60,6 +60,73 @@ jobs:
           issue-number: ${{github.event.pull_request.number}}
           body-path: 'formatted_message.md'
           edit-mode: replace
+
+      - name: Generate diffs
+        run: |
+          BASE_FOLDERS=
+          HEAD_FOLDERS= 
+          if [ -d "./base/app" ]; then
+            BASE_FOLDERS+='app/\* '
+          fi
+          if [ -d "./base/lib" ]; then
+            BASE_FOLDERS+='lib/\* '
+          fi
+          if [ -d "./head/app" ]; then
+            HEAD_FOLDERS+='app/\* '
+          fi
+          if [ -d "./head/lib" ]; then
+            HEAD_FOLDERS+='lib/\* '
+          fi
+
+          echo $BASE_FOLDERS
+          echo $HEAD_FOLDERS
+
+          cd base
+          echo 'flay base'
+          flay $BASE_FOLDERS -# > ../flay_output_base.txt
+          cd ../head
+          echo 'flay head'
+          flay $HEAD_FOLDERS -# > ../flay_output_head.txt
+          cd ..
+
+          echo 'flay diff'
+          diff -u0 flay_output_base.txt flay_output_head.txt > flay_diff.txt
+          echo "<details>" >> $GITHUB_STEP_SUMMARY
+          echo "<summary>Flay</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+          cat flay_diff.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
+
+          cd base
+          echo 'flog base'
+          flog $BASE_FOLDERS -ga > ../flog_output_base.txt
+          cd ../head
+          echo 'flog head'
+          flog $HEAD_FOLDERS -ga > ../flog_output_head.txt
+          cd ..
+
+          diff -u0 flog_output_base.txt flog_output_head.txt > flog_diff.txt
+          echo "<details>" >> $GITHUB_STEP_SUMMARY
+          echo "<summary>Flog</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+          cat flog_diff.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
+          
+          cd base
+          reek $BASE_FOLDERS --no-line-numbers --no-progress > ../reek_output_base.txt
+          cd ../head
+          reek $HEAD_FOLDERS --no-line-numbers --no-progress > ../reek_output_head.txt
+          cd ..
+
+          diff -u0 reek_output_base.txt reek_output_head.txt > reek_diff.txt
+          echo "<details>" >> $GITHUB_STEP_SUMMARY
+          echo "<summary>Reek</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+          cat reek_diff.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
 
       - name: Fail job if score degraded
         run: |
