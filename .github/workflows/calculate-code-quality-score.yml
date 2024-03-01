@@ -63,30 +63,13 @@ jobs:
 
       - name: Generate diffs
         run: |
-          BASE_FOLDERS=
-          HEAD_FOLDERS= 
-          if [ -d "./base/app" ]; then
-            BASE_FOLDERS+='app/\* '
-          fi
-          if [ -d "./base/lib" ]; then
-            BASE_FOLDERS+='lib/\* '
-          fi
-          if [ -d "./head/app" ]; then
-            HEAD_FOLDERS+='app/\* '
-          fi
-          if [ -d "./head/lib" ]; then
-            HEAD_FOLDERS+='lib/\* '
-          fi
-
-          echo $BASE_FOLDERS
-          echo $HEAD_FOLDERS
 
           cd base
           echo 'flay base'
-          flay $BASE_FOLDERS -# > ../flay_output_base.txt
+          flay app lib -# > ../flay_output_base.txt
           cd ../head
           echo 'flay head'
-          flay $HEAD_FOLDERS -# > ../flay_output_head.txt
+          flay app lib -# > ../flay_output_head.txt
           cd ..
 
           echo 'flay diff'
@@ -100,10 +83,10 @@ jobs:
 
           cd base
           echo 'flog base'
-          flog $BASE_FOLDERS -ga > ../flog_output_base.txt
+          flog app lib -ga > ../flog_output_base.txt
           cd ../head
           echo 'flog head'
-          flog $HEAD_FOLDERS -ga > ../flog_output_head.txt
+          flog app lib -ga > ../flog_output_head.txt
           cd ..
 
           diff -u0 flog_output_base.txt flog_output_head.txt > flog_diff.txt
@@ -115,9 +98,9 @@ jobs:
           echo "</details>" >> $GITHUB_STEP_SUMMARY
           
           cd base
-          reek $BASE_FOLDERS --no-line-numbers --no-progress > ../reek_output_base.txt
+          reek app lib --no-line-numbers --no-progress > ../reek_output_base.txt
           cd ../head
-          reek $HEAD_FOLDERS --no-line-numbers --no-progress > ../reek_output_head.txt
+          reek app lib --no-line-numbers --no-progress > ../reek_output_head.txt
           cd ..
 
           diff -u0 reek_output_base.txt reek_output_head.txt > reek_diff.txt
