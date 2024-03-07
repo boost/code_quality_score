@@ -51,13 +51,19 @@ base_mr_path = "#{uri.path}/projects/#{params[:'project-id']}/merge_requests/#{p
 
 # Get existing notes for this MR
 existing_notes = log_errors("getting existing notes") do
-  response = connection.get("#{base_mr_path}/notes")
-  response.body
+  response = connection.get("#{base_mr_path}/notes?per_page=100")
+  total_pages = response.headers["x-total-pages"].to_i
+  results = response.body
+
+  (2..total_pages).each do |page|
+    response = connection.get("#{base_mr_path}/notes?per_page=100&page=#{page}")
+    results << response.body
+  end
+
+  results
 end
 
-# Adding some temporary logging to help work out why we're getting duplicates sometimes
 puts "#{existing_notes.count} notes found"
-puts(existing_notes.map { |note| note['body'] })
 
 previous_quality_note = existing_notes.find do |note|
   note['body'].start_with?('## Code quality score')
