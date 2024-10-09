@@ -5,7 +5,7 @@ on:
 
 jobs:
   code_quality_score:
-    runs-on: self-hosted
+    runs-on: boost-eks-github-runners
     name: Calculate score change
     env: 
       BUNDLE_GEMFILE: ${{ github.workspace }}/CodeQuality.gemfile
