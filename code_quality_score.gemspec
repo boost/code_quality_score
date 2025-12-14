@@ -25,10 +25,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
+  spec.add_dependency "faraday", ">= 2.9.0"
   spec.add_dependency "flay", ">= 2.13.0"
   spec.add_dependency "flog", ">= 4.6.5"
   spec.add_dependency "reek", ">= 6.1.1"
-  spec.add_dependency "faraday", ">= 2.9.0"
+  spec.add_dependency "ruby_parser"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
