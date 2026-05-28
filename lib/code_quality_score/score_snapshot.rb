@@ -110,8 +110,8 @@ module CodeQualityScore
     end
 
     def normalize_path(path)
-      prefix = @repo_path.end_with?('/') ? @repo_path : "#{@repo_path}/"
-      path.delete_prefix(prefix)
+      match = path.match(%r{((?:app|lib)/.+\.rb)})
+      match ? match[1] : path
     end
   end
 end
