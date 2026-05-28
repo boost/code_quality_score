@@ -78,7 +78,7 @@ module CodeQualityScore
     def parse_reek_files(reek_output)
       reek_output.lines.each_with_object([]) do |line, arr|
         match = line.match(/^(.+\.rb) -- (\d+) warning/)
-        arr << { file: match[1], smells: match[2].to_i } if match
+        arr << { file: normalize_path(match[1]), smells: match[2].to_i } if match
       end.sort_by { |h| -h[:smells] }
     end
 
@@ -86,7 +86,7 @@ module CodeQualityScore
       file_scores = Hash.new(0.0)
       flog_output.lines.each do |line|
         match = line.match(/^\s+([\d.]+):\s+\S+\s+(\S+\.rb):\d+/)
-        file_scores[match[2]] += match[1].to_f if match
+        file_scores[normalize_path(match[2])] += match[1].to_f if match
       end
       file_scores.map { |file, score| { file: file, score: score.round(2) } }
                  .sort_by { |h| -h[:score] }
@@ -101,12 +101,17 @@ module CodeQualityScore
           blocks << current_block if current_block
           current_block = { mass: match[1].to_i, locations: [] }
         elsif current_block && (match = line.match(/^\s+(.+\.rb):(\d+)/))
-          current_block[:locations] << { file: match[1], line: match[2].to_i }
+          current_block[:locations] << { file: normalize_path(match[1]), line: match[2].to_i }
         end
       end
       blocks << current_block if current_block
 
       blocks.sort_by { |b| -b[:mass] }
+    end
+
+    def normalize_path(path)
+      prefix = @repo_path.end_with?('/') ? @repo_path : "#{@repo_path}/"
+      path.delete_prefix(prefix)
     end
   end
 end
