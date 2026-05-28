@@ -68,7 +68,7 @@ module CodeQualityScore
         base_reek = (base_result[:reek_files] || []).each_with_object({}) { |h, m| m[h[:file]] = h[:smells] }
         worse_reek = (pr_result[:reek_files] || []).select { |h| h[:smells] > (base_reek[h[:file]] || 0) }
         unless worse_reek.empty?
-          lines = worse_reek.map { |h| "- `#{h[:file]}` — #{h[:smells]} smells" }.join("\n")
+          lines = worse_reek.map { |h| "- `#{h[:file]}` — #{h[:smells]} smells (+#{h[:smells] - (base_reek[h[:file]] || 0)})" }.join("\n")
           sections << <<~MD
             <details>
             <summary>Files with more code smells than base (reek)</summary>
@@ -85,7 +85,7 @@ module CodeQualityScore
         base_flog = (base_result[:flog_files] || []).each_with_object({}) { |h, m| m[h[:file]] = h[:score] }
         worse_flog = (pr_result[:flog_files] || []).select { |h| h[:score] > (base_flog[h[:file]] || 0.0) }
         unless worse_flog.empty?
-          lines = worse_flog.map { |h| "- `#{h[:file]}` — score: #{h[:score]}" }.join("\n")
+          lines = worse_flog.map { |h| "- `#{h[:file]}` — score: #{h[:score]} (+#{(h[:score] - (base_flog[h[:file]] || 0.0)).round(2)})" }.join("\n")
           sections << <<~MD
             <details>
             <summary>Files with higher complexity than base (flog)</summary>
