@@ -12,4 +12,4 @@ base_score_snapshot = CodeQualityScore::ScoreSnapshot.new(repository_path: base_
 pr_score_snapshot = CodeQualityScore::ScoreSnapshot.new(repository_path: pr_relative_path).calculate_score
 
 # format
-CodeQualityScore::FormatComparison.format_as_markdown(base_score_snapshot, pr_score_snapshot)
+puts CodeQualityScore::FormatComparison.format_as_markdown(base_score_snapshot, pr_score_snapshot)

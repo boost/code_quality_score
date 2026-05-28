@@ -26,7 +26,7 @@ jobs:
         run: |
           echo "source 'https://rubygems.org'" > ${{ github.workspace }}/CodeQuality.gemfile
           echo "git_source(:github) { |repo| \"https://github.com/#{repo}.git\" }" >> ${{ github.workspace }}/CodeQuality.gemfile
-          echo "gem 'code_quality_score', git: 'https://github.com/boost/code_quality_score'" >> ${{ github.workspace }}/CodeQuality.gemfile
+          echo "gem 'code_quality_score', git: 'https://github.com/boost/code_quality_score', branch: 'code-quality-file-list'" >> ${{ github.workspace }}/CodeQuality.gemfile
           echo "gem 'rexml'" >> ${{ github.workspace }}/CodeQuality.gemfile
           rm --force ${{ github.workspace }}/CodeQuality.gemfile.lock
           rm --force ${{ github.workspace }}/.bundle/config
