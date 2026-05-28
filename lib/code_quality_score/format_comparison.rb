@@ -63,32 +63,38 @@ module CodeQualityScore
     def self.format_file_breakdown(base_result, pr_result)
       sections = []
 
-      base_reek = (base_result[:reek_files] || []).each_with_object({}) { |h, m| m[h[:file]] = h[:smells] }
-      worse_reek = (pr_result[:reek_files] || []).select { |h| h[:smells] > (base_reek[h[:file]] || 0) }
-      unless worse_reek.empty?
-        lines = worse_reek.map { |h| "- `#{h[:file]}` — #{h[:smells]} smells" }.join("\n")
-        sections << <<~MD
-          <details>
-          <summary>Files with more code smells than base (reek)</summary>
+      reek_worse = (pr_result[:code_smells_per_file] || 0) > (base_result[:code_smells_per_file] || 0)
+      if reek_worse
+        base_reek = (base_result[:reek_files] || []).each_with_object({}) { |h, m| m[h[:file]] = h[:smells] }
+        worse_reek = (pr_result[:reek_files] || []).select { |h| h[:smells] > (base_reek[h[:file]] || 0) }
+        unless worse_reek.empty?
+          lines = worse_reek.map { |h| "- `#{h[:file]}` — #{h[:smells]} smells" }.join("\n")
+          sections << <<~MD
+            <details>
+            <summary>Files with more code smells than base (reek)</summary>
 
-          #{lines}
+            #{lines}
 
-          </details>
-        MD
+            </details>
+          MD
+        end
       end
 
-      base_flog = (base_result[:flog_files] || []).each_with_object({}) { |h, m| m[h[:file]] = h[:score] }
-      worse_flog = (pr_result[:flog_files] || []).select { |h| h[:score] > (base_flog[h[:file]] || 0.0) }
-      unless worse_flog.empty?
-        lines = worse_flog.map { |h| "- `#{h[:file]}` — score: #{h[:score]}" }.join("\n")
-        sections << <<~MD
-          <details>
-          <summary>Files with higher complexity than base (flog)</summary>
+      flog_worse = (pr_result[:abc_method_average] || 0) > (base_result[:abc_method_average] || 0)
+      if flog_worse
+        base_flog = (base_result[:flog_files] || []).each_with_object({}) { |h, m| m[h[:file]] = h[:score] }
+        worse_flog = (pr_result[:flog_files] || []).select { |h| h[:score] > (base_flog[h[:file]] || 0.0) }
+        unless worse_flog.empty?
+          lines = worse_flog.map { |h| "- `#{h[:file]}` — score: #{h[:score]}" }.join("\n")
+          sections << <<~MD
+            <details>
+            <summary>Files with higher complexity than base (flog)</summary>
 
-          #{lines}
+            #{lines}
 
-          </details>
-        MD
+            </details>
+          MD
+        end
       end
 
       flay_worse = (pr_result[:similarity_score] || 0) > (base_result[:similarity_score] || 0)

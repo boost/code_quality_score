@@ -87,5 +87,20 @@ RSpec.describe CodeQualityScore::FormatComparison do
         expect(output).not_to include("<details>")
       end
     end
+
+    context "when aggregate scores are unchanged but individual file scores shifted" do
+      subject(:output) do
+        pr_result = worse_pr_result.merge(
+          abc_method_average: base_result[:abc_method_average],
+          code_smells_per_file: base_result[:code_smells_per_file],
+          similarity_score: base_result[:similarity_score]
+        )
+        described_class.format_as_markdown(base_result, pr_result)
+      end
+
+      it "omits all details sections" do
+        expect(output).not_to include("<details>")
+      end
+    end
   end
 end
